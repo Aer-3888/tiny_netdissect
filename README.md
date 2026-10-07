@@ -17,8 +17,9 @@ Each notebook isolates one idea of the method with a small side by side comparis
 | 00 | [`00_broden_exploration`](00_broden_exploration.ipynb) | the concept dataset | file format, categories, label encoding | Sec. 2.1, Table 1 |
 | 01 | [`01_units_and_hooks`](01_units_and_hooks.ipynb) | a unit and its activation map | vertical vs horizontal edge unit, hand made vs learned | Sec. 2.2 |
 | 02 | [`02_concepts_as_masks`](02_concepts_as_masks.ipynb) | concepts as pixel sets | pixel labels vs image labels | Sec. 2.1 |
+| 03 | [`03_threshold`](03_threshold.ipynb) | turning a map into a mask | fixed threshold vs per unit quantile | Sec. 2.2 |
 
-Notebooks 00 and 01 use the real Broden dataset. Notebook 02 uses synthetic scenes (one colored shape on a striped or dotted background) where every concept mask is exact.
+Notebooks 00 and 01 use the real Broden dataset. Notebook 02 uses synthetic scenes (one colored shape on a striped or dotted background) where every concept mask is exact. Notebook 03 uses both.
 
 ### 00. The concept dataset
 
@@ -38,6 +39,12 @@ A concept becomes a mask of the pixels that show it. A hand made "red" unit (top
 
 ![concept masks](docs/figures/concept_masks.png)
 
+### 03. Turning a map into a mask
+
+A unit's map becomes a mask by keeping the values above a threshold $T_k$. Units have arbitrary scales, so one fixed threshold keeps 2.6% of a red unit and 37.7% of a louder edge unit. The paper's per unit quantile keeps the same share of each unit (2% here, 0.5% in the paper), so masks are compared on where a unit fires, not how loud it is:
+
+![threshold](docs/figures/threshold.png)
+
 ## Setup
 
 Python 3.12 and [uv](https://docs.astral.sh/uv/).
@@ -54,7 +61,7 @@ Everything runs on CPU. AlexNet ImageNet weights (233 MB) are downloaded by torc
 
 ## Data
 
-Broden 1.0 at 227 px (975 MB), used by notebooks 00 and 01. The original server `netdissect.csail.mit.edu` is offline, a copy is kept by the [Wayback Machine](https://web.archive.org/web/20240418040425/http://netdissect.csail.mit.edu/data/broden1_227.zip). It is slow and sometimes unavailable, so download it once with a resumable tool:
+Broden 1.0 at 227 px (975 MB), used by notebooks 00, 01 and 03. The original server `netdissect.csail.mit.edu` is offline, a copy is kept by the [Wayback Machine](https://web.archive.org/web/20240418040425/http://netdissect.csail.mit.edu/data/broden1_227.zip). It is slow and sometimes unavailable, so download it once with a resumable tool:
 
 ```bash
 mkdir -p data && curl -L -C - -o data/broden1_227.zip \
